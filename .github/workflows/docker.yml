@@ -3,7 +3,6 @@ name: Docker Build & Push Nilliond (main)
 # and pushes the image to https://ghcr.io/cosmos/ibc-go-simd
 on:
   workflow_dispatch:
-  push:
 
 env:
   REGISTRY: ghcr.io

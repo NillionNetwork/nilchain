@@ -1,0 +1,50 @@
+syntax = "proto3";
+package nillion.meta.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/query/v1/query.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/nillion/nillion-chain/x/meta";
+
+
+
+// Query defines the gRPC querier service.
+service Query {
+ // Metadata queries for metadata
+  rpc MetaData(QueryMetadataRequest) returns (QueryMetadataResponse) {
+    option (google.api.http).get               = "/nillion/meta/v1/meta_data/{identifier}";
+  }
+
+  AllMetaData(QueryAllMetadataRequest) returns (QueryAllMetadataResponse) {
+    option (google.api.http).get               = "/nillion/meta/v1/all_meta_data";
+  }
+}
+
+
+// QueryMetadataRequest defines the request type for metadata
+message QueryMetadataRequest {
+  string identifier = 1;
+}
+
+// QueryMetadataResponse defines the response type for metadata
+message QueryMetadataResponse {
+  bytes metadata = 1;
+}
+
+
+// QueryAllMetadataRequest defines the request type for all metadata
+message QueryAllMetadataRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+
+// QueryAllMetadataResponse defines the response type for all metadata
+message QueryAllMetadataResponse {
+  repeated bytes metadata = 1;
+}

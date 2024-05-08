@@ -1,0 +1,9 @@
+syntax = "proto3";
+package nillion.meta.v1;
+
+option go_package = "github.com/nillion/nillion-chain/x/meta";
+
+// GenesisState defines the meta module's genesis state.
+message GenesisState {
+ bytes metadata = 1;
+}
