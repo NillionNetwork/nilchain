@@ -1,7 +1,18 @@
 package keeper
 
-import "github.com/cosmos/cosmos-sdk/codec"
+import (
+	"cosmossdk.io/core/store"
+	"github.com/cosmos/cosmos-sdk/codec"
+)
 
 type Keeper struct {
-	cdc codec.BinaryCodec
+	cdc          codec.BinaryCodec
+	storeService store.KVStoreService
+}
+
+func NewKeeper(cdc codec.BinaryCodec, storeService store.KVStoreService) Keeper {
+	return Keeper{
+		cdc:          cdc,
+		storeService: storeService,
+	}
 }
