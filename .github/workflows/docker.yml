@@ -3,7 +3,6 @@ name: Docker Build & Push Nilliond (main)
 # and pushes the image to https://ghcr.io/cosmos/ibc-go-simd
 on:
   workflow_dispatch:
-  push:
 
 env:
   REGISTRY: ghcr.io
@@ -20,7 +19,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
       with:
-        images: ${{ env.REGISTRY }}/01builders/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/NillionNetwork/${{ env.IMAGE_NAME }}
 
     - name: Build Docker image
       uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
