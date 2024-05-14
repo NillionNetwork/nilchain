@@ -1,0 +1,57 @@
+---
+    name: Run ibc E2E Tests
+    on:
+      workflow_dispatch:
+    jobs:
+      e2e:
+        runs-on: ubuntu-latest
+        strategy:
+          fail-fast: false # ensure that a single test failure doesn't cause all tests to fail
+          matrix:
+            # entrypoint corresponds to the test function in the test files which fall under the e2e directory.
+            # test is the name of the test function to be run.
+            # see the e2e docs https://github.com/cosmos/ibc-go/tree/main/e2e for more details.
+            include:
+              # e2e ibc transfer
+              - test: TestMsgTransfer_Succeeds_Nonincentivized
+                entrypoint: TestTransferTestSuite
+              # Uses governance to change params
+              - test: TestSendEnabledParam
+                entrypoint: TestTransferTestSuite
+        steps:
+          - name: Checkout the ibc-go repo.
+            uses: actions/checkout@v3
+            with:
+              repository: cosmos/ibc-go
+              ref: support-arbitrary-binaries-in-e2es
+              path: ibc-go
+
+          - name: Checkout nillion repo
+            uses: actions/checkout@v3
+            with: 
+              path: nillion
+
+          - name: Install Go 1.22
+            uses: actions/setup-go@v3
+            with:
+              go-version: 1.22
+          # IBC requires building image locally for now. This can be changed in the future. 
+          - name: Build docker image
+            run: |
+             cd nillion
+             docker build -t local-image:v8.2.0 .
+
+          - name: Run E2E tests with custom chain image.
+            run: |
+              cd ibc-go
+              cd e2e
+              make e2e-test entrypoint=${{ matrix.entrypoint }} test=${{ matrix.test}}
+            env:
+              # Configure this however you like in order to specify your own custom image and tags.
+              CHAIN_IMAGE: local-image
+              # The following tags are used to specify the ibc-go version. This will be changed in the future.
+              CHAIN_A_TAG: v8.2.0
+              CHAIN_B_TAG: v8.2.0
+              CHAIN_BINARY: nilliond
+              RELAYER_ID: hermes
+              
