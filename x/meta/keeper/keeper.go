@@ -7,18 +7,16 @@ import (
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/store"
+	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 )
 
 type Keeper struct {
 	cdc          codec.BinaryCodec
 	storeService store.KVStoreService
 
-	bankKeeper types.BankKeeper
+	bankKeeper metatypes.BankKeeper
 
 	Schema collections.Schema
 
