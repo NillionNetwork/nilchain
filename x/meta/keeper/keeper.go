@@ -24,7 +24,7 @@ type Keeper struct {
 	Resources collections.Map[collections.Pair[sdk.AccAddress, []byte], []byte]
 }
 
-func NewKeeper(cdc codec.BinaryCodec, storeService store.KVStoreService) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeService store.KVStoreService, bankKeeper metatypes.BankKeeper) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
@@ -37,6 +37,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService store.KVStoreService) Keeper 
 			collections.PairKeyCodec(sdk.AccAddressKey, collections.BytesKey),
 			collections.BytesValue,
 		),
+		bankKeeper: bankKeeper,
 	}
 
 	schema, err := sb.Build()

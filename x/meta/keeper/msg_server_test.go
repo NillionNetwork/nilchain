@@ -14,7 +14,7 @@ func TestMsgServer_PayFor(t *testing.T) {
 
 	msg := &types.MsgPayFor{
 		Resource:    []byte("resource1"),
-		FromAddress: "infinity",
+		FromAddress: "cosmos1kc068s88tkyjcc0lkx67x95dwc7hrfm44u8k55",
 		Amount: []types2.Coin{
 			{
 				Denom:  "coin1",
@@ -23,6 +23,19 @@ func TestMsgServer_PayFor(t *testing.T) {
 		},
 	}
 
-	_, err := keeper.NewMsgServerImpl(f.keeper).PayFor(f.ctx, msg)
+	fromAddress, err := types2.AccAddressFromBech32(msg.FromAddress)
 	require.NoError(t, err)
+
+	f.mockedBankKeeper.EXPECT().
+		SendCoinsFromAccountToModule(f.ctx, fromAddress, types.ModuleName, msg.Amount)
+
+	f.mockedBankKeeper.EXPECT().
+		BurnCoins(f.ctx, types.ModuleName, msg.Amount)
+
+	_, err = keeper.NewMsgServerImpl(f.keeper).PayFor(f.ctx, msg)
+	require.NoError(t, err)
+
+	// Check if the resource was saved
+	exists := f.keeper.ResourceExists(f.ctx, fromAddress, msg.Resource)
+	require.True(t, exists)
 }
