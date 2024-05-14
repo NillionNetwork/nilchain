@@ -117,7 +117,7 @@ auto_register_counterparty_payee = false
 
 
 [[chains]]
-account_prefix = "cosmos"
+account_prefix = "nillion"
 clock_drift = "5s"
 gas_multiplier = 1.1
 grpc_addr = "tcp://${GRPC_ADDR}"
@@ -139,7 +139,7 @@ event_source = { mode = 'push', url = 'ws://${RPC_LADDR}/websocket', batch_delay
        numerator = "1"
 
 [[chains]]
-account_prefix = "cosmos"
+account_prefix = "nillion"
 clock_drift = "5s"
 gas_multiplier = 1.1
 grpc_addr = "tcp://${GRPC_ADDR1}"
