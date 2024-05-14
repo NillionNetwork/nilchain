@@ -2,15 +2,18 @@ package keeper_test
 
 import (
 	"context"
-	storetypes "cosmossdk.io/store/types"
-	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/types"
 	"testing"
+
+	storetypes "cosmossdk.io/store/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/testutil"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
+	"github.com/stretchr/testify/require"
 
 	"github.com/NillionNetwork/nillion-chain/x/meta"
 	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 )
 
 type fixture struct {
@@ -31,6 +34,32 @@ func initFixture(t *testing.T) *fixture {
 	}
 }
 
-func TestGetAuthority(t *testing.T) {
+func TestSetResource(t *testing.T) {
 	t.Parallel()
+
+	f := initFixture(t)
+
+	addr, err := types.AccAddressFromBech32("cosmos1kc068s88tkyjcc0lkx67x95dwc7hrfm44u8k55")
+	require.NoError(t, err)
+
+	err = f.keeper.SaveResource(f.ctx, addr, []byte("resource1"))
+	require.NoError(t, err)
+}
+
+func TestResourceExists(t *testing.T) {
+	t.Parallel()
+
+	f := initFixture(t)
+
+	addr, err := types.AccAddressFromBech32("cosmos1kc068s88tkyjcc0lkx67x95dwc7hrfm44u8k55")
+	require.NoError(t, err)
+
+	exists := f.keeper.ResourceExists(f.ctx, addr, []byte("resource1"))
+	require.False(t, exists)
+
+	err = f.keeper.SaveResource(f.ctx, addr, []byte("resource1"))
+	require.NoError(t, err)
+
+	exists = f.keeper.ResourceExists(f.ctx, addr, []byte("resource1"))
+	require.True(t, exists)
 }

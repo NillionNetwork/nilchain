@@ -1,5 +1,7 @@
 package types
 
+import "cosmossdk.io/collections"
+
 const (
 	// ModuleName is the name of the module
 	ModuleName = "meta"
@@ -9,4 +11,9 @@ const (
 
 	// RouterKey is the message route for meta
 	RouterKey = ModuleName
+)
+
+// KVStore keys
+var (
+	ResourcesPrefix = collections.NewPrefix(1)
 )

@@ -16,6 +16,5 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 func (m msgServer) PayFor(ctx context.Context, payFor *types.MsgPayFor) (*types.MsgPayForResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	return &types.MsgPayForResponse{}, nil
 }
