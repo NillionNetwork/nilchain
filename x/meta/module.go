@@ -27,7 +27,9 @@ var (
 	_ module.HasGenesis          = AppModule{}
 	_ module.HasServices         = AppModule{}
 	_ module.HasConsensusVersion = AppModule{}
+	_ module.HasName             = AppModule{}
 	_ autocli.HasAutoCLIConfig   = AppModule{}
+	_ autocli.HasCustomTxCommand = AppModule{}
 
 	_ appmodule.AppModule = AppModule{}
 )
@@ -77,13 +79,20 @@ type AppModule struct {
 	keeper keeper.Keeper
 }
 
+func NewAppModule(keeper keeper.Keeper) *AppModule {
+	return &AppModule{
+		AppModuleBasic: AppModuleBasic{},
+		keeper:         keeper,
+	}
+}
+
 func (a AppModule) ConsensusVersion() uint64 {
 	return ConsensusVersion
 }
 
 func (a AppModule) RegisterServices(configurator module.Configurator) {
 	metatypes.RegisterMsgServer(configurator.MsgServer(), keeper.NewMsgServerImpl(a.keeper))
-	metatypes.RegisterQueryServer(configurator.MsgServer(), keeper.NewQueryServer(a.keeper))
+	metatypes.RegisterQueryServer(configurator.QueryServer(), keeper.NewQueryServer(a.keeper))
 }
 
 func (a AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {

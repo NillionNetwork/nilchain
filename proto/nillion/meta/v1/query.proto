@@ -15,10 +15,12 @@ option go_package = "github.com/NillionNetwork/nillion-chain/x/meta/types";
 service Query {
   // Metadata queries for metadata
   rpc MetaData(QueryMetadataRequest) returns (QueryMetadataResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/nillion/meta/v1/meta_data/{identifier}";
   }
 
   rpc AllMetaData(QueryAllMetadataRequest) returns (QueryAllMetadataResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/nillion/meta/v1/all_meta_data";
   }
 }

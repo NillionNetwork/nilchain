@@ -3,6 +3,9 @@ package nillionapp
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/NillionNetwork/nillion-chain/x/meta"
+	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
+	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 	"io"
 	"os"
 	"path/filepath"
@@ -184,6 +187,7 @@ type NillionApp struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
+	MetaKeeper            keeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -489,6 +493,10 @@ func NewNillionApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.MetaKeeper = keeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[metatypes.StoreKey]), app.BankKeeper,
+	)
+
 	// ****  Module Options ****
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -514,6 +522,7 @@ func NewNillionApp(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		circuit.NewAppModule(appCodec, app.CircuitKeeper),
+		meta.NewAppModule(app.MetaKeeper),
 
 		// IBC modules
 		ibc.NewAppModule(app.IBCKeeper),
@@ -593,6 +602,7 @@ func NewNillionApp(
 		ibcexported.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, authz.ModuleName, ibctransfertypes.ModuleName,
 		icatypes.ModuleName, ibcfeetypes.ModuleName, feegrant.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName,
 		vestingtypes.ModuleName, group.ModuleName, consensusparamtypes.ModuleName, circuittypes.ModuleName,
+		metatypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
