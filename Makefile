@@ -53,6 +53,18 @@ build: BUILD_ARGS=-o $(BUILDDIR)/
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	CGO_ENABLED="1" go $@ $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
+build-cross: go.sum $(BUILDDIR)/
+build-cross: build-darwin-amd64 build-darwin-arm64
+build-cross: build-linux-amd64
+
+build-darwin-amd64 build-darwin-arm64: build-darwin-%:
+	mkdir -p $(BUILDDIR)/darwin/$*
+	GOOS=darwin GOARCH=$* go build $(BUILD_FLAGS) -o $(BUILDDIR)/darwin/$* ./...
+
+build-linux-amd64:
+	mkdir -p $(BUILDDIR)/linux/amd64
+	CGO_ENABLED="1" GOOS=linux GOARCH=$* go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/amd64 ./...
+
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
