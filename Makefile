@@ -1,11 +1,13 @@
 #!/usr/bin/make -f
 
+export VERSION := $(shell echo $(shell git describe --always --match "v*") | sed 's/^v//')
+export TMVERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
+export COMMIT := $(shell git log -1 --format='%H')
+
 BUILDDIR ?= $(CURDIR)/build
 GOBIN ?= $(GOPATH)/bin
 NILLION_BINARY ?= nilliond
 
-# Build flags for compiling Go binaries
-BUILD_FLAGS = -tags "netgo" -ldflags "-w -s"
 
 # Default target executed when no arguments are given to make.
 default_target: all
@@ -42,6 +44,22 @@ ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
 endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
+
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=sim \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=simd \
+		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
+		  -X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TMVERSION)
+
+ifeq (,$(findstring nostrip,$(COSMOS_BUILD_OPTIONS)))
+  ldflags += -w -s
+endif
+ldflags += $(LDFLAGS)
+ldflags := $(strip $(ldflags))
+
+# Build flags for compiling Go binaries
+BUILD_FLAGS = -tags "netgo" -ldflags '$(ldflags)'
 
 ###############################################################################
 ###                                  Build                                  ###
