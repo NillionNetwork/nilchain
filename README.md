@@ -15,6 +15,12 @@ make install
 make build
 ```
 
+### Cross-Compiling
+
+Use the `build-cross` target to cross-compile for the following platforms: linux/amd64, linux/arm64,
+darwin/amd64, darwin/arm64. Please note that building for linux/arm64 requires an arm64-compatible
+version of gcc installed. On Debian-based systems, this would be `aarch64-linux-gnu-gcc`.
+
 ### Scripts
 
 ```
