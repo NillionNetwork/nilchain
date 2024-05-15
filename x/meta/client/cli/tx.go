@@ -1,18 +1,20 @@
 package cli
 
 import (
-	"github.com/NillionNetwork/nillion-chain/x/meta/types"
+	"os"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
-	"os"
+
+	"github.com/NillionNetwork/nillion-chain/x/meta/types"
 )
 
-func TxCmd(name string) *cobra.Command {
+func TxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   name,
+		Use:   types.ModuleName,
 		Short: "Meta transactions subcommands",
 	}
 

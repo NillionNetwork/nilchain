@@ -2,8 +2,10 @@ package meta
 
 import (
 	"context"
+	"cosmossdk.io/client/v2/autocli"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/cobra"
 	"time"
 
 	"cosmossdk.io/core/appmodule"
@@ -15,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
+	"github.com/NillionNetwork/nillion-chain/x/meta/client/cli"
 	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
 	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 )
@@ -24,6 +27,7 @@ var (
 	_ module.HasGenesis          = AppModule{}
 	_ module.HasServices         = AppModule{}
 	_ module.HasConsensusVersion = AppModule{}
+	_ autocli.HasAutoCLIConfig   = AppModule{}
 
 	_ appmodule.AppModule = AppModule{}
 )
@@ -61,6 +65,10 @@ func (a AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEnc
 	}
 
 	return genesisState.Validate()
+}
+
+func (a AppModuleBasic) GetTxCmd() *cobra.Command {
+	return cli.TxCmd()
 }
 
 type AppModule struct {
