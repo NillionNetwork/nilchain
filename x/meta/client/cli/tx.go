@@ -56,12 +56,12 @@ Where resource1.json contains the resource data.
 				return err
 			}
 
-			metadata, err := parseMetadataFile(args[2])
+			coins, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
 				return err
 			}
 
-			coins, err := sdk.ParseCoinsNormalized(args[2])
+			metadata, err := parseMetadataFile(args[2])
 			if err != nil {
 				return err
 			}
@@ -75,6 +75,8 @@ Where resource1.json contains the resource data.
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }

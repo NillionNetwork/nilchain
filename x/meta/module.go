@@ -76,13 +76,16 @@ func (a AppModuleBasic) GetTxCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
+	ak metatypes.AccountKeeper
+
 	keeper keeper.Keeper
 }
 
-func NewAppModule(keeper keeper.Keeper) *AppModule {
+func NewAppModule(keeper keeper.Keeper, ak metatypes.AccountKeeper) *AppModule {
 	return &AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		keeper:         keeper,
+		ak:             ak,
 	}
 }
 
@@ -101,7 +104,7 @@ func (a AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.R
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	telemetry.MeasureSince(start, "InitGenesis", "meta", "unmarshal")
 
-	a.keeper.InitGenesis(ctx, &genesisState)
+	a.keeper.InitGenesis(ctx, a.ak, &genesisState)
 }
 
 func (a AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
