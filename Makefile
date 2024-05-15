@@ -63,7 +63,7 @@ build-darwin-amd64 build-darwin-arm64: build-darwin-%:
 
 build-linux-amd64:
 	mkdir -p $(BUILDDIR)/linux/amd64
-	CGO_ENABLED="1" GOOS=linux GOARCH=$* go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/amd64 ./...
+	CGO_ENABLED="1" GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/amd64 ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
