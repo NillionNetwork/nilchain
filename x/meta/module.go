@@ -1,7 +1,6 @@
 package meta
 
 import (
-	"context"
 	"cosmossdk.io/client/v2/autocli"
 	"encoding/json"
 	"fmt"
@@ -50,11 +49,7 @@ func (a AppModuleBasic) RegisterInterfaces(registry types.InterfaceRegistry) {
 	metatypes.RegisterInterfaces(registry)
 }
 
-func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	if err := metatypes.RegisterQueryHandlerClient(context.Background(), mux, metatypes.NewQueryClient(clientCtx)); err != nil {
-		panic(err)
-	}
-}
+func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {}
 
 func (a AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(metatypes.DefaultGenesisState())
@@ -95,7 +90,6 @@ func (a AppModule) ConsensusVersion() uint64 {
 
 func (a AppModule) RegisterServices(configurator module.Configurator) {
 	metatypes.RegisterMsgServer(configurator.MsgServer(), keeper.NewMsgServerImpl(a.keeper))
-	metatypes.RegisterQueryServer(configurator.QueryServer(), keeper.NewQueryServer(a.keeper))
 }
 
 func (a AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
