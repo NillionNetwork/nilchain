@@ -54,4 +54,4 @@
               CHAIN_B_TAG: v8.2.0
               CHAIN_BINARY: nilliond
               RELAYER_ID: hermes
-              
+              BECH32_PREFIX: nillion 

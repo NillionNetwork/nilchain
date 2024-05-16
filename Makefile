@@ -1,12 +1,14 @@
 #!/usr/bin/make -f
 
+export VERSION := $(shell echo $(shell git describe --always --match "v*") | sed 's/^v//')
+export TMVERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
+export COMMIT := $(shell git log -1 --format='%H')
+
 BUILDDIR ?= $(CURDIR)/build
 GOBIN ?= $(GOPATH)/bin
 NILLION_BINARY ?= nilliond
 DOCKER := $(shell which docker)
 
-# Build flags for compiling Go binaries
-BUILD_FLAGS = -tags "netgo" -ldflags "-w -s"
 
 # Default target executed when no arguments are given to make.
 default_target: all
@@ -38,11 +40,40 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
+# Set Linux/arm64 compiler.
+UNAME_S = $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+  UNAME_M = $(shell uname -m)
+  ifneq ($(UNAME_M),aarch64)
+    LINUX_ARM64_CC = "aarch64-linux-gnu-gcc"
+  else
+    LINUX_ARM64_CC = $(CC)
+  endif
+else
+  LINUX_ARM64_CC = $(CC)
+endif
+
 ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
   build_tags += gcc
 endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
+
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=nillion \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=nilliond \
+		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
+		  -X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TMVERSION)
+
+ifeq (,$(findstring nostrip,$(COSMOS_BUILD_OPTIONS)))
+  ldflags += -w -s
+endif
+ldflags += $(LDFLAGS)
+ldflags := $(strip $(ldflags))
+
+# Build flags for compiling Go binaries
+BUILD_FLAGS = -tags "netgo" -ldflags '$(ldflags)'
 
 ###############################################################################
 ###                                  Build                                  ###
@@ -53,6 +84,23 @@ BUILD_TARGETS := build install
 build: BUILD_ARGS=-o $(BUILDDIR)/
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	CGO_ENABLED="1" go $@ $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+build-cross: go.sum $(BUILDDIR)/
+build-cross: build-darwin-amd64 build-darwin-arm64
+build-cross: build-linux-amd64 build-linux-arm64
+
+build-darwin-amd64 build-darwin-arm64: build-darwin-%:
+	mkdir -p $(BUILDDIR)/darwin/$*
+	GOOS=darwin GOARCH=$* go build $(BUILD_FLAGS) -o $(BUILDDIR)/darwin/$* ./...
+
+build-linux-amd64:
+	mkdir -p $(BUILDDIR)/linux/amd64
+	CGO_ENABLED="1" GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/amd64 ./...
+
+build-linux-arm64:
+	mkdir -p $(BUILDDIR)/linux/arm64
+	test -z $(LINUX_ARM64_CC) || command -v $(LINUX_ARM64_CC) >/dev/null
+	CC=$(LINUX_ARM64_CC) CGO_ENABLED="1" GOOS=linux GOARCH=arm64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/arm64 ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/

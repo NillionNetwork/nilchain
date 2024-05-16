@@ -1,4 +1,4 @@
-module github.com/NillionNetwork/nillion-chain
+module github.com/NillionNetwork/nilliond
 
 go 1.22.1
 

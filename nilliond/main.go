@@ -7,8 +7,8 @@ import (
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	nillionapp "github.com/NillionNetwork/nillion-chain/app"
-	"github.com/NillionNetwork/nillion-chain/nilliond/cmd"
+	nillionapp "github.com/NillionNetwork/nilliond/app"
+	"github.com/NillionNetwork/nilliond/nilliond/cmd"
 )
 
 func main() {
