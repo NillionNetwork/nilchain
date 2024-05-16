@@ -39,6 +39,19 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
+# Set Linux/arm64 compiler.
+UNAME_S = $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+  UNAME_M = $(shell uname -m)
+  ifneq ($(UNAME_M),aarch64)
+    LINUX_ARM64_CC = "aarch64-linux-gnu-gcc"
+  else
+    LINUX_ARM64_CC = $(CC)
+  endif
+else
+  LINUX_ARM64_CC = $(CC)
+endif
+
 ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
   build_tags += gcc
 endif
@@ -70,6 +83,23 @@ BUILD_TARGETS := build install
 build: BUILD_ARGS=-o $(BUILDDIR)/
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	CGO_ENABLED="1" go $@ $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+build-cross: go.sum $(BUILDDIR)/
+build-cross: build-darwin-amd64 build-darwin-arm64
+build-cross: build-linux-amd64 build-linux-arm64
+
+build-darwin-amd64 build-darwin-arm64: build-darwin-%:
+	mkdir -p $(BUILDDIR)/darwin/$*
+	GOOS=darwin GOARCH=$* go build $(BUILD_FLAGS) -o $(BUILDDIR)/darwin/$* ./...
+
+build-linux-amd64:
+	mkdir -p $(BUILDDIR)/linux/amd64
+	CGO_ENABLED="1" GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/amd64 ./...
+
+build-linux-arm64:
+	mkdir -p $(BUILDDIR)/linux/arm64
+	test -z $(LINUX_ARM64_CC) || command -v $(LINUX_ARM64_CC) >/dev/null
+	CC=$(LINUX_ARM64_CC) CGO_ENABLED="1" GOOS=linux GOARCH=arm64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/linux/arm64 ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
