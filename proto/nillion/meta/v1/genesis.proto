@@ -1,7 +1,16 @@
 syntax = "proto3";
 package nillion.meta.v1;
 
+import "cosmos_proto/cosmos.proto";
+
 option go_package = "github.com/NillionNetwork/nillion-chain/x/meta/types";
 
 // GenesisState defines the meta module's genesis state.
-message GenesisState { bytes metadata = 1; }
+message GenesisState {
+  repeated Resource resources = 1;
+}
+
+message Resource {
+  string from_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  bytes metadata = 2;
+}
