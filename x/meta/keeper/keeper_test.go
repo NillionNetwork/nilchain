@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"context"
 	"github.com/cosmos/cosmos-sdk/types"
 	"go.uber.org/mock/gomock"
 	"testing"
@@ -19,11 +18,12 @@ import (
 )
 
 type fixture struct {
-	ctx context.Context
+	ctx types.Context
 
 	keeper keeper.Keeper
 
-	mockedBankKeeper *metatest.MockBankKeeper
+	mockedBankKeeper    *metatest.MockBankKeeper
+	mockedAccountKeeper *metatest.MockAccountKeeper
 }
 
 func initFixture(t *testing.T) *fixture {
@@ -34,6 +34,7 @@ func initFixture(t *testing.T) *fixture {
 
 	ctrl := gomock.NewController(t)
 	m := metatest.NewMockBankKeeper(ctrl)
+	a := metatest.NewMockAccountKeeper(ctrl)
 
 	k := keeper.NewKeeper(encCfg.Codec, storeService, m)
 
@@ -41,7 +42,8 @@ func initFixture(t *testing.T) *fixture {
 		ctx:    testutil.DefaultContextWithDB(t, mockStoreKey, storetypes.NewTransientStoreKey("transient_test")).Ctx.WithBlockHeader(cmtproto.Header{}),
 		keeper: k,
 
-		mockedBankKeeper: m,
+		mockedBankKeeper:    m,
+		mockedAccountKeeper: a,
 	}
 }
 

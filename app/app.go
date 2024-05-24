@@ -3,6 +3,9 @@ package nillionapp
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/NillionNetwork/nillion-chain/x/meta"
+	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
+	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 	"io"
 	"os"
 	"path/filepath"
@@ -141,6 +144,7 @@ var (
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		ibcfeetypes.ModuleName:         nil,
 		icatypes.ModuleName:            nil,
+		metatypes.ModuleName:           {authtypes.Burner},
 	}
 )
 
@@ -184,6 +188,7 @@ type NillionApp struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
+	MetaKeeper            keeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -269,7 +274,7 @@ func NewNillionApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, group.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, icacontrollertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey,
-		authzkeeper.StoreKey, ibcfeetypes.StoreKey, consensusparamtypes.StoreKey, circuittypes.StoreKey,
+		authzkeeper.StoreKey, ibcfeetypes.StoreKey, consensusparamtypes.StoreKey, circuittypes.StoreKey, metatypes.StoreKey,
 	)
 
 	// register streaming services
@@ -489,6 +494,10 @@ func NewNillionApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.MetaKeeper = keeper.NewKeeper(
+		appCodec, runtime.NewKVStoreService(keys[metatypes.StoreKey]), app.BankKeeper,
+	)
+
 	// ****  Module Options ****
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -514,6 +523,7 @@ func NewNillionApp(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		circuit.NewAppModule(appCodec, app.CircuitKeeper),
+		meta.NewAppModule(app.MetaKeeper, app.AccountKeeper),
 
 		// IBC modules
 		ibc.NewAppModule(app.IBCKeeper),
@@ -593,6 +603,7 @@ func NewNillionApp(
 		ibcexported.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, authz.ModuleName, ibctransfertypes.ModuleName,
 		icatypes.ModuleName, ibcfeetypes.ModuleName, feegrant.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName,
 		vestingtypes.ModuleName, group.ModuleName, consensusparamtypes.ModuleName, circuittypes.ModuleName,
+		metatypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -786,7 +797,7 @@ func (app *NillionApp) TxConfig() client.TxConfig {
 
 // AutoCliOpts returns the autocli options for the app.
 func (app *NillionApp) AutoCliOpts() autocli.AppOptions {
-	modules := make(map[string]appmodule.AppModule, 0)
+	modules := make(map[string]appmodule.AppModule)
 	for _, m := range app.ModuleManager.Modules {
 		if moduleWithName, ok := m.(module.HasName); ok {
 			moduleName := moduleWithName.Name()

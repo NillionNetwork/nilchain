@@ -1,9 +1,10 @@
 package meta
 
 import (
-	"context"
+	"cosmossdk.io/client/v2/autocli"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/cobra"
 	"time"
 
 	"cosmossdk.io/core/appmodule"
@@ -15,6 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
+	"github.com/NillionNetwork/nillion-chain/x/meta/client/cli"
 	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
 	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 )
@@ -24,6 +26,9 @@ var (
 	_ module.HasGenesis          = AppModule{}
 	_ module.HasServices         = AppModule{}
 	_ module.HasConsensusVersion = AppModule{}
+	_ module.HasName             = AppModule{}
+	_ autocli.HasAutoCLIConfig   = AppModule{}
+	_ autocli.HasCustomTxCommand = AppModule{}
 
 	_ appmodule.AppModule = AppModule{}
 )
@@ -44,11 +49,7 @@ func (a AppModuleBasic) RegisterInterfaces(registry types.InterfaceRegistry) {
 	metatypes.RegisterInterfaces(registry)
 }
 
-func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	if err := metatypes.RegisterQueryHandlerClient(context.Background(), mux, metatypes.NewQueryClient(clientCtx)); err != nil {
-		panic(err)
-	}
-}
+func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {}
 
 func (a AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(metatypes.DefaultGenesisState())
@@ -63,10 +64,24 @@ func (a AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEnc
 	return genesisState.Validate()
 }
 
+func (a AppModuleBasic) GetTxCmd() *cobra.Command {
+	return cli.TxCmd()
+}
+
 type AppModule struct {
 	AppModuleBasic
 
+	ak metatypes.AccountKeeper
+
 	keeper keeper.Keeper
+}
+
+func NewAppModule(keeper keeper.Keeper, ak metatypes.AccountKeeper) *AppModule {
+	return &AppModule{
+		AppModuleBasic: AppModuleBasic{},
+		keeper:         keeper,
+		ak:             ak,
+	}
 }
 
 func (a AppModule) ConsensusVersion() uint64 {
@@ -75,7 +90,6 @@ func (a AppModule) ConsensusVersion() uint64 {
 
 func (a AppModule) RegisterServices(configurator module.Configurator) {
 	metatypes.RegisterMsgServer(configurator.MsgServer(), keeper.NewMsgServerImpl(a.keeper))
-	metatypes.RegisterQueryServer(configurator.MsgServer(), keeper.NewQueryServer(a.keeper))
 }
 
 func (a AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
@@ -84,7 +98,7 @@ func (a AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.R
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	telemetry.MeasureSince(start, "InitGenesis", "meta", "unmarshal")
 
-	a.keeper.InitGenesis(ctx, &genesisState)
+	a.keeper.InitGenesis(ctx, a.ak, &genesisState)
 }
 
 func (a AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
