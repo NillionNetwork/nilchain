@@ -67,6 +67,22 @@ func (k Keeper) ResourceExists(ctx context.Context, fromAddress sdk.AccAddress, 
 	return exists
 }
 
+func (k Keeper) IterateResources(ctx context.Context, cb func(fromAddress sdk.AccAddress, resource []byte)) {
+	iterate, err := k.Resources.Iterate(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	for ; iterate.Valid(); iterate.Next() {
+		kv, err := iterate.KeyValue()
+		if err != nil {
+			panic(err)
+		}
+
+		cb(kv.Key.K1(), kv.Value)
+	}
+}
+
 func forgeResourceKey(fromAcc sdk.AccAddress, resource []byte) collections.Pair[sdk.AccAddress, []byte] {
 	hashResource := sha256.Sum256(resource)
 	return collections.Join(fromAcc, hashResource[:])
