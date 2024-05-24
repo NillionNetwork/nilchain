@@ -7,6 +7,7 @@ export COMMIT := $(shell git log -1 --format='%H')
 BUILDDIR ?= $(CURDIR)/build
 GOBIN ?= $(GOPATH)/bin
 NILLION_BINARY ?= nilliond
+DOCKER := $(shell which docker)
 
 
 # Default target executed when no arguments are given to make.
@@ -123,3 +124,90 @@ build-all: tools build lint test vulncheck
 
 init:
 	cd scripts && sh init.sh
+
+###############################################################################
+###                                Protobuf                                 ###
+###############################################################################
+
+protoVer=latest
+protoImageName=cosmossdk-proto:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace --user 0 $(protoImageName)
+
+# ------
+# NOTE: If you are experiencing problems running these commands, try deleting
+#       the docker images and execute the desired command again.
+#
+proto-all: proto-format proto-lint proto-gen proto-swagger-gen
+
+proto-gen:
+	@echo "Generating Protobuf files"
+	$(protoImage) sh ./scripts/protocgen.sh
+
+proto-swagger-gen:
+	@echo "Downloading Protobuf dependencies"
+	@make proto-download-deps
+	@echo "Generating Protobuf Swagger"
+	$(protoImage) sh ./scripts/protoc-swagger-gen.sh
+
+proto-format:
+	@echo "Formatting Protobuf files"
+	$(protoImage) find ./ -name *.proto -exec clang-format -i {} \;
+
+proto-lint:
+	@echo "Linting Protobuf files"
+	@$(protoImage) buf lint --error-format=json
+
+proto-check-breaking:
+	@echo "Checking Protobuf files for breaking changes"
+	$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+
+SWAGGER_DIR=./swagger-proto
+THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
+
+proto-download-deps:
+	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
+	git init && \
+	git remote add origin "https://github.com/evmos/cosmos-sdk.git" && \
+	git config core.sparseCheckout true && \
+	printf "proto\nthird_party\n" > .git/info/sparse-checkout && \
+	git pull origin "$(DEPS_COSMOS_SDK_VERSION)" && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/* ..
+	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \
+	git init && \
+	git remote add origin "https://github.com/cosmos/ibc-go.git" && \
+	git config core.sparseCheckout true && \
+	printf "proto\n" > .git/info/sparse-checkout && \
+	git pull origin "$(DEPS_IBC_GO_VERSION)" && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/* ..
+	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_proto_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/cosmos_proto_tmp" && \
+	git init && \
+	git remote add origin "https://github.com/cosmos/cosmos-proto.git" && \
+	git config core.sparseCheckout true && \
+	printf "proto\n" > .git/info/sparse-checkout && \
+	git pull origin "$(DEPS_COSMOS_PROTO_VERSION)" && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/* ..
+	rm -rf "$(THIRD_PARTY_DIR)/cosmos_proto_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/gogoproto" && \
+	curl -SSL "https://raw.githubusercontent.com/cosmos/gogoproto/$(DEPS_COSMOS_GOGOPROTO)/gogoproto/gogo.proto" > "$(THIRD_PARTY_DIR)/gogoproto/gogo.proto"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/google/api" && \
+	curl -sSL https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto > "$(THIRD_PARTY_DIR)/google/api/annotations.proto"
+	curl -sSL https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/http.proto > "$(THIRD_PARTY_DIR)/google/api/http.proto"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/cosmos/ics23/v1" && \
+	curl -sSL "https://raw.githubusercontent.com/cosmos/ics23/$(DEPS_COSMOS_ICS23)/proto/cosmos/ics23/v1/proofs.proto" > "$(THIRD_PARTY_DIR)/cosmos/ics23/v1/proofs.proto"
+
+
+.PHONY: proto-all proto-gen proto-format proto-lint proto-check-breaking proto-swagger-gen
+
