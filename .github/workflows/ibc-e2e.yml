@@ -52,6 +52,6 @@
               # The following tags are used to specify the ibc-go version. This will be changed in the future.
               CHAIN_A_TAG: v8.2.0
               CHAIN_B_TAG: v8.2.0
-              CHAIN_BINARY: nilliond
+              CHAIN_BINARY: nilchaind
               RELAYER_ID: hermes
               BECH32_PREFIX: nillion 

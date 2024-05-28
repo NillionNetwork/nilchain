@@ -44,7 +44,7 @@ import (
 	"github.com/NillionNetwork/nilliond/params"
 )
 
-// NewRootCmd creates a new root command for nilliond. It is called once in the
+// NewRootCmd creates a new root command for nilchaind. It is called once in the
 // main function.
 func NewRootCmd() *cobra.Command {
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
@@ -67,7 +67,7 @@ func NewRootCmd() *cobra.Command {
 		WithViper("") // In nillionapp, we don't use any prefix for env variables.
 
 	rootCmd := &cobra.Command{
-		Use:           "nilliond",
+		Use:           "nilchaind",
 		Short:         "nillion app chain",
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
@@ -293,7 +293,7 @@ func txCommand() *cobra.Command {
 	return cmd
 }
 
-// genesisCommand builds genesis-related `nilliond genesis` command. Users may provide application specific commands as a parameter
+// genesisCommand builds genesis-related `nilchaind genesis` command. Users may provide application specific commands as a parameter
 func genesisCommand(encodingConfig params.EncodingConfig, basicManager module.BasicManager, cmds ...*cobra.Command) *cobra.Command {
 	cmd := genutilcli.Commands(encodingConfig.TxConfig, basicManager, nillionapp.DefaultNodeHome)
 

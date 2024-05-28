@@ -6,7 +6,7 @@ export COMMIT := $(shell git log -1 --format='%H')
 
 BUILDDIR ?= $(CURDIR)/build
 GOBIN ?= $(GOPATH)/bin
-NILLION_BINARY ?= nilliond
+NILLION_BINARY ?= nilchaind
 DOCKER := $(shell which docker)
 
 
@@ -59,8 +59,8 @@ endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=nillion \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=nilliond \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=nilchain \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=nilchaind \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \

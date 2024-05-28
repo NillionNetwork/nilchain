@@ -7,7 +7,7 @@ ENV GOPATH=""
 # Copy relevant files before go mod download. Replace directives to local paths break if local
 # files are not copied before go mod download.
 ADD app app
-ADD nilliond nilliond
+ADD nilchaind nilchaind
 ADD params params
 
 COPY Makefile .
@@ -20,6 +20,6 @@ RUN make build
 
 FROM alpine:3.18
 
-COPY --from=builder /go/build/nilliond /bin/nilliond
+COPY --from=builder /go/build/nilchaind /bin/nilchaind
 
-ENTRYPOINT ["nilliond"]
+ENTRYPOINT ["nilchaind"]
