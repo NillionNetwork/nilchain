@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: nilliond 
+  IMAGE_NAME: nilchaind 
 
 jobs:
   docker-build:
@@ -27,7 +27,7 @@ jobs:
         context: .
         tags: ${{ steps.meta.outputs.tags }}
 
-    - name: Test nilliond is runnable
+    - name: Test nilchaind is runnable
       run: |
         docker run --rm ${{ steps.meta.outputs.tags }}
     - name: Log in to the Container registry
