@@ -59,7 +59,7 @@ endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=nilchain \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=nillion \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=nilchaind \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \

@@ -1,7 +1,7 @@
 ---
     name: Run ibc E2E Tests
     on:
-      workflow_dispatch:
+      push:
     jobs:
       e2e:
         runs-on: ubuntu-latest
