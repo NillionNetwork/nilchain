@@ -3,12 +3,13 @@ package nillionapp
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/NillionNetwork/nillion-chain/x/meta"
-	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
-	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/NillionNetwork/nilliond/x/meta"
+	"github.com/NillionNetwork/nilliond/x/meta/keeper"
+	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
 
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"

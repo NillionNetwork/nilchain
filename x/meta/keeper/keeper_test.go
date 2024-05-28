@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/types"
 	"go.uber.org/mock/gomock"
-	"testing"
 
 	storetypes "cosmossdk.io/store/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -12,9 +13,9 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/stretchr/testify/require"
 
-	"github.com/NillionNetwork/nillion-chain/x/meta"
-	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
-	metatest "github.com/NillionNetwork/nillion-chain/x/meta/testutil"
+	"github.com/NillionNetwork/nilliond/x/meta"
+	"github.com/NillionNetwork/nilliond/x/meta/keeper"
+	metatest "github.com/NillionNetwork/nilliond/x/meta/testutil"
 )
 
 type fixture struct {
