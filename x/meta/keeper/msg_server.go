@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/NillionNetwork/nillion-chain/x/meta/types"
+	"github.com/NillionNetwork/nilliond/x/meta/types"
 )
 
 var _ types.MsgServer = msgServer{}

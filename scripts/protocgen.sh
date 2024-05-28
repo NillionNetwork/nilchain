@@ -17,5 +17,5 @@ done
 
 cd ..
 # move proto files to the right places
-cp -r github.com/NillionNetwork/nillion-chain/* ./
+cp -r github.com/NillionNetwork/nilliond/* ./
 rm -rf github.com

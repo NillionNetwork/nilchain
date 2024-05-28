@@ -1,11 +1,12 @@
 package meta
 
 import (
-	"cosmossdk.io/client/v2/autocli"
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
 	"time"
+
+	"cosmossdk.io/client/v2/autocli"
+	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -16,9 +17,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/NillionNetwork/nillion-chain/x/meta/client/cli"
-	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
-	metatypes "github.com/NillionNetwork/nillion-chain/x/meta/types"
+	"github.com/NillionNetwork/nilliond/x/meta/client/cli"
+	"github.com/NillionNetwork/nilliond/x/meta/keeper"
+	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
 )
 
 var (

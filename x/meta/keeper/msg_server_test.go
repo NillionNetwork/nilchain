@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
-	"github.com/NillionNetwork/nillion-chain/x/meta/keeper"
-	"github.com/NillionNetwork/nillion-chain/x/meta/types"
+	"github.com/NillionNetwork/nilliond/x/meta/keeper"
+	"github.com/NillionNetwork/nilliond/x/meta/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestMsgServer_PayFor(t *testing.T) {

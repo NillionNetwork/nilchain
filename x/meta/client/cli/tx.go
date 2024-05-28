@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/NillionNetwork/nillion-chain/x/meta/types"
+	"github.com/NillionNetwork/nilliond/x/meta/types"
 )
 
 func TxCmd() *cobra.Command {

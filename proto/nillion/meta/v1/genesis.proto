@@ -3,7 +3,7 @@ package nillion.meta.v1;
 
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/NillionNetwork/nillion-chain/x/meta/types";
+option go_package = "github.com/NillionNetwork/nilliond/x/meta/types";
 
 // GenesisState defines the meta module's genesis state.
 message GenesisState {
