@@ -1,6 +1,6 @@
-# nilliond
+# nilchain
 
-nilliond is the Coordination Layer for the Nillion Network. It coordinates the payment of blind
+nilchain is the Coordination Layer for the Nillion Network. It coordinates the payment of blind
 computations and storage operations performed on the network. It is built using the [Cosmos
 SDK](https://github.com/cosmos/cosmos-sdk), a framework for building PoS blockchain applications,
 which was chosen for the inter-connectivity, speed and sovereignty its ecosystem provides.
