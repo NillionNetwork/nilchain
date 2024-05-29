@@ -9,6 +9,7 @@ ENV GOPATH=""
 ADD app app
 ADD nilchaind nilchaind
 ADD params params
+ADD x x 
 
 COPY Makefile .
 COPY go.mod .
