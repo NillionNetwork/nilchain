@@ -5,11 +5,11 @@ import (
 	"io"
 	"testing"
 
-	"github.com/NillionNetwork/nilliond/x/meta/client/cli"
+	"github.com/NillionNetwork/nilchain/x/meta/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/stretchr/testify/require"
 
-	"github.com/NillionNetwork/nilliond/x/meta"
+	"github.com/NillionNetwork/nilchain/x/meta"
 	abci "github.com/cometbft/cometbft/abci/types"
 	rpcclientmock "github.com/cometbft/cometbft/rpc/client/mock"
 	"github.com/cosmos/cosmos-sdk/client"

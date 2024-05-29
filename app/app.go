@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/NillionNetwork/nilliond/x/meta"
-	"github.com/NillionNetwork/nilliond/x/meta/keeper"
-	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
+	"github.com/NillionNetwork/nilchain/x/meta"
+	"github.com/NillionNetwork/nilchain/x/meta/keeper"
+	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"

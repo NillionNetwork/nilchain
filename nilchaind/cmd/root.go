@@ -40,8 +40,8 @@ import (
 
 	cmtcfg "github.com/cometbft/cometbft/config"
 
-	nillionapp "github.com/NillionNetwork/nilliond/app"
-	"github.com/NillionNetwork/nilliond/params"
+	nillionapp "github.com/NillionNetwork/nilchain/app"
+	"github.com/NillionNetwork/nilchain/params"
 )
 
 // NewRootCmd creates a new root command for nilchaind. It is called once in the

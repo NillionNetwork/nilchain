@@ -17,9 +17,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/NillionNetwork/nilliond/x/meta/client/cli"
-	"github.com/NillionNetwork/nilliond/x/meta/keeper"
-	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
+	"github.com/NillionNetwork/nilchain/x/meta/client/cli"
+	"github.com/NillionNetwork/nilchain/x/meta/keeper"
+	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 )
 
 var (
