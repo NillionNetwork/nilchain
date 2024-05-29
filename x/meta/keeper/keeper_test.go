@@ -13,9 +13,9 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/stretchr/testify/require"
 
-	"github.com/NillionNetwork/nilliond/x/meta"
-	"github.com/NillionNetwork/nilliond/x/meta/keeper"
-	metatest "github.com/NillionNetwork/nilliond/x/meta/testutil"
+	"github.com/NillionNetwork/nilchain/x/meta"
+	"github.com/NillionNetwork/nilchain/x/meta/keeper"
+	metatest "github.com/NillionNetwork/nilchain/x/meta/testutil"
 )
 
 type fixture struct {

@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
+	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 )
 
 func TestImportExportGenesis(t *testing.T) {

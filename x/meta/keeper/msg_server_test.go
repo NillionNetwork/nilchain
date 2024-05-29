@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/NillionNetwork/nilliond/x/meta/keeper"
-	"github.com/NillionNetwork/nilliond/x/meta/types"
+	"github.com/NillionNetwork/nilchain/x/meta/keeper"
+	"github.com/NillionNetwork/nilchain/x/meta/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )

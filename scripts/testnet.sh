@@ -9,7 +9,7 @@ GRPC_ADDR="$NODE_IP:9081"
 # Remove existing state to ensure a clean initialization
 rm -rf "$HOMEDIR"
 
-NILLIOND_BIN=$(which nilliond)
+NILLIOND_BIN=$(which nilchaind)
 
 # Initialize the chain
 $NILLIOND_BIN init test --chain-id demo --default-denom unillion --home "$HOMEDIR"

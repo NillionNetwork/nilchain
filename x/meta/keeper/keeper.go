@@ -7,7 +7,7 @@ import (
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/store"
-	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
+	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

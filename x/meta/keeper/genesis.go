@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	metatypes "github.com/NillionNetwork/nilliond/x/meta/types"
+	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, ak metatypes.AccountKeeper, genState *metatypes.GenesisState) {
