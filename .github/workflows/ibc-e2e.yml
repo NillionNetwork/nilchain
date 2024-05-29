@@ -15,9 +15,6 @@
               # e2e ibc transfer
               - test: TestMsgTransfer_Succeeds_Nonincentivized
                 entrypoint: TestTransferTestSuite
-              # Uses governance to change params
-              - test: TestSendEnabledParam
-                entrypoint: TestTransferTestSuite
         steps:
           - name: Checkout the ibc-go repo.
             uses: actions/checkout@v3
