@@ -5,8 +5,9 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 )
 
 // this upgrade adds the metatypes.StoreKey to the store
