@@ -13,7 +13,7 @@ import (
 // this upgrade adds the metatypes.StoreKey to the store
 const (
 	UpgradeName   = "v020"
-	upgradeHeight = 100
+	upgradeHeight = 20
 )
 
 func (app NillionApp) RegisterUpgradeHandlers() {
