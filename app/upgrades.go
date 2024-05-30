@@ -11,7 +11,10 @@ import (
 )
 
 // this upgrade adds the metatypes.StoreKey to the store
-const UpgradeName = "v010-to-v020"
+const (
+	UpgradeName   = "v020"
+	upgradeHeight = 10
+)
 
 func (app NillionApp) RegisterUpgradeHandlers() {
 	app.UpgradeKeeper.SetUpgradeHandler(
@@ -21,19 +24,14 @@ func (app NillionApp) RegisterUpgradeHandlers() {
 		},
 	)
 
-	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
-	if err != nil {
-		panic(err)
-	}
-
-	if upgradeInfo.Name == UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	if !app.UpgradeKeeper.IsSkipHeight(upgradeHeight) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{
 				metatypes.StoreKey,
 			},
 		}
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeHeight, &storeUpgrades))
 	}
 
 }
