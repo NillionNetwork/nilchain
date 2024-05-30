@@ -30,8 +30,8 @@ func (app NillionApp) RegisterUpgradeHandlers() {
 				metatypes.StoreKey,
 			},
 		}
+
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
 		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeHeight, &storeUpgrades))
 	}
-
 }

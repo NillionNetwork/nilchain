@@ -744,6 +744,8 @@ func (app *NillionApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock)
 
 // BeginBlocker application updates every begin block
 func (app *NillionApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	app.ScheduleForkUpgrade(ctx)
+
 	return app.ModuleManager.BeginBlock(ctx)
 }
 
