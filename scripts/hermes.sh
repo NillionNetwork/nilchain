@@ -2,8 +2,8 @@
 
 # Set the home directory for your chain
 NODE_IP="localhost"
-HOMEDIR="$HOME/.nilchainapp"
-HOMEDIR1="$HOME/.nilchainap1"
+HOMEDIR="$HOME/.nillionapp"
+HOMEDIR1="$HOME/.nillionapp1"
 RPC_LADDR="$NODE_IP:26648"
 GRPC_ADDR="$NODE_IP:9081"
 RPC_LADDR1="$NODE_IP:26649"
@@ -21,7 +21,10 @@ $NILLIOND_BIN init test --chain-id chainB --default-denom unillion --home "$HOME
 
 # Configure other settings (chain ID, keyring-backend)
 $NILLIOND_BIN config set client chain-id chainA --home "$HOMEDIR"
+$NILLIOND_BIN config set client keyring-backend test --home "$HOMEDIR"
+
 $NILLIOND_BIN config set client chain-id chainB --home "$HOMEDIR1"
+$NILLIOND_BIN config set client keyring-backend test --home "$HOMEDIR1"
 
 # Add keys for users
 $NILLIOND_BIN keys add alice --home "$HOMEDIR"
@@ -30,12 +33,12 @@ $NILLIOND_BIN keys add alice --home "$HOMEDIR1"
 $NILLIOND_BIN keys add bob --home "$HOMEDIR1"
 
 # Add genesis accounts and create a default validator
-$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion  --home "$HOMEDIR"
-$NILLIOND_BIN genesis add-genesis-account bob 1000unillion  --home "$HOMEDIR"
+$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion --keyring-backend test --home "$HOMEDIR"
+$NILLIOND_BIN genesis add-genesis-account bob 1000unillion --keyring-backend test --home "$HOMEDIR"
 
 # Add genesis accounts and create a default validator
-$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion  --home "$HOMEDIR1"
-$NILLIOND_BIN genesis add-genesis-account bob 1000unillion  --home "$HOMEDIR1"
+$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion --keyring-backend test --home "$HOMEDIR1"
+$NILLIOND_BIN genesis add-genesis-account bob 1000unillion --keyring-backend test --home "$HOMEDIR1"
 
 # Create a default validator and collect genesis transactions
 $NILLIOND_BIN genesis gentx alice 1000000unillion --chain-id chainA --home "$HOMEDIR"
@@ -47,9 +50,9 @@ $NILLIOND_BIN genesis collect-gentxs --home "$HOMEDIR1"
 
 # Add account in genesis (required by Hermes)
 # Create user account keypair
-$NILLIOND_BIN keys add test  --home $HOMEDIR --output json > $HOMEDIR/keypair.json 2>&1
+$NILLIOND_BIN keys add test --keyring-backend test --home $HOMEDIR --output json > $HOMEDIR/keypair.json 2>&1
 $NILLIOND_BIN genesis add-genesis-account $(jq -r .address $HOMEDIR/keypair.json) 1000000000stake --home $HOMEDIR
-$NILLIOND_BIN keys add test2  --home $HOMEDIR1 --output json > $HOMEDIR1/keypair.json 2>&1
+$NILLIOND_BIN keys add test2 --keyring-backend test --home $HOMEDIR1 --output json > $HOMEDIR1/keypair.json 2>&1
 $NILLIOND_BIN genesis add-genesis-account $(jq -r .address $HOMEDIR1/keypair.json) 1000000000stake --home $HOMEDIR1
 
 # Start the chain

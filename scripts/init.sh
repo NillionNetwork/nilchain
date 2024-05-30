@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set the home directory for your chain
-HOMEDIR="$HOME/.nilchainapp"
+HOMEDIR="$HOME/.nillionapp"
 
 # Remove existing state to ensure a clean initialization
 rm -rf "$HOMEDIR"
@@ -20,8 +20,8 @@ $NILLIOND_BIN keys add alice --home "$HOMEDIR"
 $NILLIOND_BIN keys add bob --home "$HOMEDIR"
 
 # Add genesis accounts and create a default validator
-$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion --home "$HOMEDIR"
-$NILLIOND_BIN genesis add-genesis-account bob 1000unillion --home "$HOMEDIR"
+$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion --keyring-backend test --home "$HOMEDIR"
+$NILLIOND_BIN genesis add-genesis-account bob 1000unillion --keyring-backend test --home "$HOMEDIR"
 
 # Create a default validator and collect genesis transactions
 $NILLIOND_BIN genesis gentx alice 1000000unillion --chain-id demo --home "$HOMEDIR"
