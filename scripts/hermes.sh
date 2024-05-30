@@ -16,8 +16,8 @@ rm -rf "$HOMEDIR1"
 NILLIOND_BIN=$(which nilchaind)
 
 # Initialize the chain
-$NILLIOND_BIN init test --chain-id chainA --default-denom anillion --home "$HOMEDIR"
-$NILLIOND_BIN init test --chain-id chainB --default-denom anillion --home "$HOMEDIR1"
+$NILLIOND_BIN init test --chain-id chainA --default-denom unillion --home "$HOMEDIR"
+$NILLIOND_BIN init test --chain-id chainB --default-denom unillion --home "$HOMEDIR1"
 
 # Configure other settings (chain ID, keyring-backend)
 $NILLIOND_BIN config set client chain-id chainA --home "$HOMEDIR"
@@ -33,19 +33,19 @@ $NILLIOND_BIN keys add alice --home "$HOMEDIR1"
 $NILLIOND_BIN keys add bob --home "$HOMEDIR1"
 
 # Add genesis accounts and create a default validator
-$NILLIOND_BIN genesis add-genesis-account alice 10000000anillion --keyring-backend test --home "$HOMEDIR"
-$NILLIOND_BIN genesis add-genesis-account bob 1000anillion --keyring-backend test --home "$HOMEDIR"
+$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion --keyring-backend test --home "$HOMEDIR"
+$NILLIOND_BIN genesis add-genesis-account bob 1000unillion --keyring-backend test --home "$HOMEDIR"
 
 # Add genesis accounts and create a default validator
-$NILLIOND_BIN genesis add-genesis-account alice 10000000anillion --keyring-backend test --home "$HOMEDIR1"
-$NILLIOND_BIN genesis add-genesis-account bob 1000anillion --keyring-backend test --home "$HOMEDIR1"
+$NILLIOND_BIN genesis add-genesis-account alice 10000000unillion --keyring-backend test --home "$HOMEDIR1"
+$NILLIOND_BIN genesis add-genesis-account bob 1000unillion --keyring-backend test --home "$HOMEDIR1"
 
 # Create a default validator and collect genesis transactions
-$NILLIOND_BIN genesis gentx alice 1000000anillion --chain-id chainA --home "$HOMEDIR"
+$NILLIOND_BIN genesis gentx alice 1000000unillion --chain-id chainA --home "$HOMEDIR"
 $NILLIOND_BIN genesis collect-gentxs --home "$HOMEDIR"
 
 # Create a default validator and collect genesis transactions
-$NILLIOND_BIN genesis gentx alice 1000000anillion --chain-id chainB --home "$HOMEDIR1"
+$NILLIOND_BIN genesis gentx alice 1000000unillion --chain-id chainB --home "$HOMEDIR1"
 $NILLIOND_BIN genesis collect-gentxs --home "$HOMEDIR1"
 
 # Add account in genesis (required by Hermes)
