@@ -618,6 +618,10 @@ func NewNillionApp(
 		panic(err)
 	}
 
+	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
+	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
+	app.RegisterUpgradeHandlers()
+
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
 	reflectionSvc, err := runtimeservices.NewReflectionService()
@@ -740,6 +744,8 @@ func (app *NillionApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock)
 
 // BeginBlocker application updates every begin block
 func (app *NillionApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	app.ScheduleForkUpgrade(ctx)
+
 	return app.ModuleManager.BeginBlock(ctx)
 }
 
