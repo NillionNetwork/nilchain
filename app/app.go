@@ -376,6 +376,9 @@ func NewNillionApp(
 	// set the governance module account as the authority for conducting upgrades
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, runtime.NewKVStoreService(keys[upgradetypes.StoreKey]), appCodec, homePath, app.BaseApp, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
+	// Upgrade the KVStoreKey after upgrade keeper initialization
+	app.setupUpgradeStoreLoaders()
+
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibcexported.StoreKey], app.GetSubspace(ibcexported.ModuleName), app.StakingKeeper, app.UpgradeKeeper, scopedIBCKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -618,9 +621,9 @@ func NewNillionApp(
 		panic(err)
 	}
 
-	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
+	// setupUpgradeHandlers is used for registering any on-chain upgrades.
 	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
-	app.RegisterUpgradeHandlers()
+	app.setupUpgradeHandlers()
 
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
@@ -744,8 +747,6 @@ func (app *NillionApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock)
 
 // BeginBlocker application updates every begin block
 func (app *NillionApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
-	app.ScheduleForkUpgrade(ctx)
-
 	return app.ModuleManager.BeginBlock(ctx)
 }
 

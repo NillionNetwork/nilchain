@@ -1,37 +1,40 @@
 package nillionapp
 
 import (
-	"context"
-
-	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-
-	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
+	"fmt"
+	"github.com/NillionNetwork/nilchain/app/upgrades"
 )
 
-// this upgrade adds the metatypes.StoreKey to the store
-const (
-	UpgradeName   = "v020"
-	upgradeHeight = 804000
-)
+var Upgrades = []upgrades.Upgrade{
+	upgrades.Upgrade_0_2_1,
+}
 
-func (app NillionApp) RegisterUpgradeHandlers() {
-	app.UpgradeKeeper.SetUpgradeHandler(
-		UpgradeName,
-		func(ctx context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-			return app.ModuleManager.RunMigrations(ctx, app.Configurator(), fromVM)
-		},
-	)
+func (app NillionApp) setupUpgradeHandlers() {
+	for _, upgrade := range Upgrades {
+		app.UpgradeKeeper.SetUpgradeHandler(
+			upgrade.UpgradeName,
+			upgrade.CreateUpgradeHandler(
+				*app.ModuleManager,
+				app.configurator,
+			),
+		)
+	}
+}
 
-	if !app.UpgradeKeeper.IsSkipHeight(upgradeHeight) {
-		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{
-				metatypes.StoreKey,
-			},
+func (app NillionApp) setupUpgradeStoreLoaders() {
+	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	if err != nil {
+		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
+	}
+
+	if app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		return
+	}
+
+	for _, upgrade := range Upgrades {
+		if upgradeInfo.Name == upgrade.UpgradeName {
+			app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &upgrade.StoreUpgrades))
 		}
-
-		// configure store loader that checks if version == upgradeHeight and applies store upgrades
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeHeight, &storeUpgrades))
 	}
 }
