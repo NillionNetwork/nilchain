@@ -33,6 +33,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+	authtxconfig "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
@@ -144,6 +145,10 @@ func enrichAutoCliOpts(autoCliOpts autocli.AppOptions, clientCtx client.Context)
 	autoCliOpts.Keyring, err = keyring.NewAutoCLIKeyring(clientCtx.Keyring)
 	if err != nil {
 		return autocli.AppOptions{}, err
+	}
+	autoCliOpts.TxConfigOpts = tx.ConfigOptions{
+		EnabledSignModes:           tx.DefaultSignModes,
+		TextualCoinMetadataQueryFn: authtxconfig.NewGRPCCoinMetadataQueryFn(clientCtx),
 	}
 
 	return autoCliOpts, nil
