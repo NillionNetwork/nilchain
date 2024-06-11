@@ -62,6 +62,7 @@ func NewRootCmd() *cobra.Command {
 		WithCodec(encodingConfig.Codec).
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 		WithLegacyAmino(encodingConfig.Amino).
+		WithTxConfig(encodingConfig.TxConfig).
 		WithInput(os.Stdin).
 		WithAccountRetriever(types.AccountRetriever{}).
 		WithHomeDir(nillionapp.DefaultNodeHome).
