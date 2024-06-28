@@ -81,3 +81,9 @@ message QueryAllMetadataResponse {
   repeated bytes metadata = 1;
 }
 ```
+
+### CLI
+
+```
+nilchaind tx meta pay-for <address-paid-for> 1000anillion /path-to-resource/resource.json --from alice --node tcp://localhost:26657 --chain-id demo
+```
