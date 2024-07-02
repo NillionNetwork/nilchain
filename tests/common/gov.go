@@ -2,45 +2,68 @@ package common
 
 import (
 	"context"
-
+	upgradetypes "cosmossdk.io/x/upgrade/types"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
+	"github.com/strangelove-ventures/interchaintest/v8/ibc"
+	"time"
 )
+
+const VotingPeriod time.Duration = time.Second * 30
 
 // ExecuteGovProposal submits the given governance proposal using the provided user and uses all validators to vote yes on the proposal.
 // It ensure the proposal successfully passes.
-func (s *NetworkTestSuite) ExecuteGovProposal(ctx context.Context, chain *cosmos.CosmosChain, user cosmos.User, content v1beta1.Content) {
-	sender, err := sdk.AccAddressFromBech32(user.FormattedAddress())
+func (s *NetworkTestSuite) ExecuteGovProposal(ctx context.Context, chain *cosmos.CosmosChain, wallet ibc.Wallet, planName string, upgradeVersion string) {
+	address, err := chain.GetAddress(ctx, wallet.KeyName())
 	s.Require().NoError(err)
 
-	msgSubmitProposal, err := v1beta1.NewMsgSubmitProposal(content, sdk.NewCoins(sdk.NewCoin(chain.Config().Denom, v1beta1.DefaultMinDepositTokens)), sender)
+	addrString, err := sdk.Bech32ifyAddressBytes(chain.Config().Bech32Prefix, address)
 	s.Require().NoError(err)
 
-	_, err = s.BroadcastMessages(ctx, chain, user, msgSubmitProposal)
+	prevVersion := chain.Nodes()[0].Image.Version
+	plan := upgradetypes.Plan{
+		Name:   planName,
+		Height: int64(haltHeight),
+		Info:   fmt.Sprintf("upgrade version test from %s to %s", prevVersion, upgradeVersion),
+	}
+	upgrade := upgradetypes.MsgSoftwareUpgrade{
+		Authority: authority,
+		Plan:      plan,
+	}
+
+	proposal, err := chain.BuildProposal(
+		[]cosmos.ProtoMessage{&upgrade},
+		fmt.Sprintf("upgrade from %s to %s", prevVersion, upgradeVersion),
+		"upgrade chain E2E test",
+		"",
+		"50000000unillion",
+		addrString,
+		true,
+	)
 	s.Require().NoError(err)
-	//s.AssertValidTxResponse(txResp)
 
-	// TODO: replace with parsed proposal ID from MsgSubmitProposalResponse
-	// https://github.com/cosmos/ibc-go/issues/2122
+	_, err = chain.SubmitProposal(ctx, wallet.KeyName(), proposal)
+	s.Require().NoError(err)
 
-	//proposal, err := s.QueryProposal(ctx, chain, 1)
-	//s.Require().NoError(err)
-	//s.Require().Equal(govtypes.StatusVotingPeriod, proposal.Status)
-	//
-	//err = chain.VoteOnProposalAllValidators(ctx, "1", ibc.ProposalVoteYes)
-	//s.Require().NoError(err)
-	//
-	//// ensure voting period has not passed before validators finished voting
-	//proposal, err = s.QueryProposal(ctx, chain, 1)
-	//s.Require().NoError(err)
-	//s.Require().Equal(govtypes.StatusVotingPeriod, proposal.Status)
-	//
-	//time.Sleep(testvalues.VotingPeriod) // pass proposal
-	//
-	//proposal, err = s.QueryProposal(ctx, chain, 1)
-	//s.Require().NoError(err)
-	//s.Require().Equal(govtypes.StatusPassed, proposal.Status)
+	prop, err := chain.GovQueryProposal(ctx, 1)
+	s.Require().NoError(err)
+	s.Require().Equal(v1beta1.StatusVotingPeriod, prop.Status)
+
+	err = chain.VoteOnProposalAllValidators(ctx, 1, cosmos.ProposalVoteYes)
+	s.Require().NoError(err)
+
+	// ensure voting period has not passed before validators finished voting
+	prop, err = chain.GovQueryProposal(ctx, 1)
+	s.Require().NoError(err)
+	s.Require().Equal(v1beta1.StatusVotingPeriod, prop.Status)
+
+	time.Sleep(VotingPeriod) // pass proposal
+
+	prop, err = chain.GovQueryProposal(ctx, 1)
+	s.Require().NoError(err)
+	s.Require().Equal(v1beta1.StatusPassed, prop.Status)
 }
 
 // BroadcastMessages broadcasts the provided messages to the given chain and signs them on behalf of the provided user.
