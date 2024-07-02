@@ -23,10 +23,10 @@ type UpgradeTestSuite struct {
 	common.NetworkTestSuite
 }
 
-// TestUpgrade0_2_1 tests the upgrade from 0.1.0 to 0.2.1
+// TestUpgrade0_2_1 tests the upgrade from 0.2.1 to 0.2.2
 func (s *UpgradeTestSuite) TestUpgrade0_2_1() {
-	oldVersion := "v0.1.1"
-	//newVersion := "0.2.1"
+	oldVersion := "v0.2.1"
+	newVersion := "0.2.2"
 
 	s.InitChain(oldVersion, "nilliond")
 
@@ -34,5 +34,5 @@ func (s *UpgradeTestSuite) TestUpgrade0_2_1() {
 
 	users := interchaintest.GetAndFundTestUsers(s.T(), ctx, "nillion", math.NewInt(1000000000), s.Chain)
 
-	s.UpgradeChain(ctx, s.Chain, users[0], "v0.2.1")
+	s.UpgradeChain(ctx, s.Chain, users[0], newVersion)
 }
