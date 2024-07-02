@@ -1,7 +1,10 @@
 package upgrades
 
 import (
+	"context"
+	"cosmossdk.io/math"
 	"github.com/NillionNetwork/nilchain/tests/common"
+	"github.com/strangelove-ventures/interchaintest/v8"
 	"testing"
 
 	testifysuite "github.com/stretchr/testify/suite"
@@ -20,5 +23,11 @@ func (s *UpgradeTestSuite) TestUpgrade0_2_1() {
 	oldVersion := "v0.1.1"
 	//newVersion := "0.2.1"
 
-	s.InitChain(oldVersion)
+	s.InitChain(oldVersion, "nilliond")
+
+	ctx := context.Background()
+
+	users := interchaintest.GetAndFundTestUsers(s.T(), ctx, "nillion", math.NewInt(1000000000))
+
+	s.UpgradeChain(ctx, s.Chain, &users[0], "upgrade-test", "v0.2.1")
 }
