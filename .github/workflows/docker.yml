@@ -1,13 +1,11 @@
-name: Docker Build & Push Nilliond (main)
-# Build & Push builds the simapp docker image on every push to main and
-# and pushes the image to https://ghcr.io/cosmos/ibc-go-simd
+name: Docker Build & Push Nilchaind (main)
+
 on:
   workflow_dispatch:
-  push:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: nilchaind 
+  IMAGE_NAME: nilchaind
 
 jobs:
   docker-build:
@@ -16,33 +14,49 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: 0  
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
-      uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
+      uses: docker/metadata-action@v4
       with:
         images: ${{ env.REGISTRY }}/NillionNetwork/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=tag
+        flavor: |
+          latest=false  # Ensure 'latest' tag is not generated
 
     - name: Build Docker image
-      uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+      uses: docker/build-push-action@v2
       with:
         context: .
         tags: ${{ steps.meta.outputs.tags }}
 
+    - name: Debug tags
+      run: |
+        echo "Generated tags: ${{ steps.meta.outputs.tags }}"
+        echo "Generated labels: ${{ steps.meta.outputs.labels }}"
+
+    - name: List Docker images
+      run: docker images
+
     - name: Test nilchaind is runnable
       run: |
-        docker run --rm ${{ steps.meta.outputs.tags }} version 
+        # Extract the tag from the current context
+        TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d ',' -f 1)
+        echo "Running Docker container with tag: $TAG"
+        docker run --rm $TAG version
 
     - name: Log in to the Container registry
-      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+      uses: docker/login-action@v2
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push Docker image
-      uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+      uses: docker/build-push-action@v2
       with:
         context: .
         push: true
