@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	chainRepository    = "ghcr.io/nillionnetwork/nilliond"
+	chainRepository    = "ghcr.io/nillionnetwork/nilchaind"
 	haltHeight         = int64(50)
 	authority          = "nillion10d07y265gmmuvt4z0w9aw880jnsr700jpzdkas"
 	blocksAfterUpgrade = int64(10)
