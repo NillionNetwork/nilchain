@@ -11,6 +11,8 @@ ADD nilchaind nilchaind
 ADD params params
 ADD x x 
 
+ADD .git .git
+
 COPY Makefile .
 COPY go.mod .
 COPY go.sum .
