@@ -91,7 +91,7 @@ func (s *NetworkTestSuite) InitChain(version string, binary string) {
 
 // UpgradeChain
 func (s *NetworkTestSuite) UpgradeChain(ctx context.Context, chain *cosmos.CosmosChain, wallet ibc.Wallet, upgradeVersion string) {
-	planName := "upgrade-test"
+	planName := upgradeVersion
 	s.ExecuteGovProposal(ctx, chain, wallet, planName, upgradeVersion)
 
 	height, err := chain.Height(ctx)
