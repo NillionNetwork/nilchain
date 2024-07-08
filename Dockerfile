@@ -20,7 +20,13 @@ COPY go.sum .
 
 RUN go mod download
 
-RUN GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false go build -mod=readonly -tags "netgo ledger" -ldflags '-X github.com/cosmos/cosmos-sdk/version.Name=sim -X github.com/cosmos/cosmos-sdk/version.AppName=simd -X github.com/cosmos/cosmos-sdk/version.Version= -X github.com/cosmos/cosmos-sdk/version.Commit=$BINARY_VERSION -X "github.com/cosmos/cosmos-sdk/version.BuildTags=netgo ledger," -w -s' -trimpath -o /go/build/ ./...
+RUN GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false go build -mod=readonly -tags "netgo ledger" \
+    -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name=sim \
+    -X github.com/cosmos/cosmos-sdk/version.AppName=simd \
+    -X github.com/cosmos/cosmos-sdk/version.Version=$BINARY_VERSION \
+    -X github.com/cosmos/cosmos-sdk/version.Commit= \
+    -X 'github.com/cosmos/cosmos-sdk/version.BuildTags=netgo ledger,' -w -s" \
+    -trimpath -o /go/build/ ./...
 
 FROM alpine:3.18
 
