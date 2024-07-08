@@ -39,6 +39,8 @@ jobs:
         with:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            VERSION=${{ env.VERSION }}
 
       - name: Debug tags
         run: |
