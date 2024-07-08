@@ -31,7 +31,7 @@ jobs:
       - name: Set VERSION environment variable
         run: |
           # Extract the first tag from the generated tags
-          TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d ',' -f 1)
+          TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d ':' -f 2)
           echo "VERSION=$TAG" >> $GITHUB_ENV
 
       - name: Build Docker image
