@@ -4,6 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	nillionapp "github.com/NillionNetwork/nilchain/app"
+	"github.com/NillionNetwork/nilchain/app/upgrades"
 	"github.com/NillionNetwork/nilchain/tests/common"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"testing"
@@ -23,10 +24,10 @@ type UpgradeTestSuite struct {
 	common.NetworkTestSuite
 }
 
-// TestUpgrade0_2_1 tests the upgrade from 0.2.1 to 0.2.2
-func (s *UpgradeTestSuite) TestUpgrade0_2_1() {
+// TestUpgrade0_2_1 tests the upgrade from 0.2.1 to 0.2.4
+func (s *UpgradeTestSuite) TestUpgrade0_2_4() {
 	oldVersion := "v0.2.1-test-only"
-	newVersion := "v0.2.4-rc5"
+	newVersion := upgrades.Upgrade_0_2_4.UpgradeName
 
 	s.InitChain(oldVersion, "nilliond")
 
