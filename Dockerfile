@@ -1,6 +1,6 @@
 FROM golang:1.22-alpine3.18 as builder
 ARG BINARY_VERSION
-
+RUN echo "BINARY_VERSION is set to: $BINARY_VERSION"
 RUN set -eux; apk add --no-cache git libusb-dev linux-headers gcc musl-dev make;
 
 ENV GOPATH=""

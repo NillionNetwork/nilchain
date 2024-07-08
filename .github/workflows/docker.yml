@@ -32,10 +32,10 @@ jobs:
       with:
         context: .
         tags: ${{ steps.meta.outputs.tags }}
-        build-args: BINARY_VERSION=${{ steps.meta.outputs.labels.org.opencontainers.image.version }}
+        build-args: |
+          BINARY_VERSION=${{ steps.meta.outputs.labels.org.opencontainers.image.version }}
 
-
-    - name: Debug tags
+    - name: Debug tags and labels
       run: |
         echo "Generated tags: ${{ steps.meta.outputs.tags }}"
         echo "Generated labels: ${{ steps.meta.outputs.labels }}"
