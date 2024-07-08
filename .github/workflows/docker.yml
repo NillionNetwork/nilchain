@@ -40,7 +40,8 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
-            VERSION=${{ steps.meta.outputs.labels.org.opencontainers.image.version }}
+            VERSION=${{ env.VERSION }}
+
 
       - name: Debug tags
         run: |
