@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 
-VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
+ifndef VERSION
+  VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
+endif
+
 export TMVERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
 export COMMIT := $(shell git log -1 --format='%H')
 
