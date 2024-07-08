@@ -33,7 +33,7 @@ jobs:
         context: .
         tags: ${{ steps.meta.outputs.tags }}
         build-args: |
-          BINARY_VERSION=${{ steps.meta.outputs.labels.org.opencontainers.image.version }}
+          BINARY_VERSION=${{ steps.meta.outputs.labels }}
 
     - name: Debug tags and labels
       run: |
