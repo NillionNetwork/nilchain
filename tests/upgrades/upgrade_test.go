@@ -26,7 +26,7 @@ type UpgradeTestSuite struct {
 // TestUpgrade0_2_1 tests the upgrade from 0.2.1 to 0.2.2
 func (s *UpgradeTestSuite) TestUpgrade0_2_1() {
 	oldVersion := "v0.2.1-test-only"
-	newVersion := "v0.2.3"
+	newVersion := "v0.2.4-rc5"
 
 	s.InitChain(oldVersion, "nilliond")
 
