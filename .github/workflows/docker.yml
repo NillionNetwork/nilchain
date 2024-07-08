@@ -2,7 +2,6 @@ name: Docker Build & Push Nilchaind (main)
 
 on:
   workflow_dispatch:
-  push:
 
 env:
   REGISTRY: ghcr.io
