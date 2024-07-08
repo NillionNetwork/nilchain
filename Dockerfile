@@ -11,6 +11,8 @@ ADD nilchaind nilchaind
 ADD params params
 ADD x x
 
+ADD .git .git
+
 ARG VERSION
 ENV VERSION=${VERSION}
 
