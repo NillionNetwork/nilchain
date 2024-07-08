@@ -32,6 +32,8 @@ jobs:
       with:
         context: .
         tags: ${{ steps.meta.outputs.tags }}
+        build-args: BINARY_VERSION=${{ steps.meta.outputs.labels.org.opencontainers.image.version }}
+
 
     - name: Debug tags
       run: |
