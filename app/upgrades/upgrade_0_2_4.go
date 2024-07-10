@@ -5,7 +5,6 @@ import (
 
 	"cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
@@ -16,9 +15,5 @@ var Upgrade_0_2_4 = Upgrade{
 			return mm.RunMigrations(ctx, configurator, fromVM)
 		}
 	},
-	StoreUpgrades: types.StoreUpgrades{
-		Added: []string{
-			metatypes.StoreKey,
-		},
-	},
+	StoreUpgrades: types.StoreUpgrades{},
 }
