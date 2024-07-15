@@ -16,6 +16,8 @@ ADD .git .git
 ARG VERSION
 ENV VERSION=${VERSION}
 
+ADD .git .git
+
 COPY Makefile .
 COPY go.mod .
 COPY go.sum .

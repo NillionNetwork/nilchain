@@ -19,7 +19,7 @@ type HandlerOptions struct {
 	IBCKeeper     *keeper.Keeper
 }
 
-// NewAnteHandler returns an AnteHandler that checks and increments sequence
+// NewAnteHandler returns an AnteHandler that checks and increments the sequence
 // numbers, checks signatures & account numbers, and deducts fees from the first
 // signer.
 func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {

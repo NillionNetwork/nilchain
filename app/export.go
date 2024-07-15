@@ -49,7 +49,7 @@ func (app *NillionApp) ExportAppStateAndValidators(
 }
 
 // prepare for fresh start at zero height
-// NOTE zero height genesis is a temporary feature which will be deprecated
+// NOTE zero height genesis is a temporary feature that will be deprecated
 // in favour of export at a block height
 func (app *NillionApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []string) {
 	applyAllowedAddrs := false
