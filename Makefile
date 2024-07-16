@@ -11,6 +11,7 @@ BUILDDIR ?= $(CURDIR)/build
 GOBIN ?= $(GOPATH)/bin
 NILLION_BINARY ?= nilchaind
 DOCKER := $(shell which docker)
+LEDGER_ENABLED := true
 
 
 # Default target executed when no arguments are given to make.
@@ -76,7 +77,7 @@ ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
 # Build flags for compiling Go binaries
-BUILD_FLAGS = -tags "netgo" -ldflags '$(ldflags)'
+BUILD_FLAGS = -tags '$(build_tags)' -ldflags '$(ldflags)'
 
 ###############################################################################
 ###                                  Build                                  ###
