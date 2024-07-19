@@ -19,7 +19,7 @@
 - [ ] Provide sufficient release notes for validators/users/developers
 - [ ] If migrations are necessary, implement them and write tests.
 
-### Logistics/Comms checklist for handling upgrade: @onur
+### Logistics/Comms checklist for handling upgrade
 
 - [ ] Settle on the target upgrade height, use estimation based on current block time
 - [ ] Create Governance proposal with upgrade height, version etc. (chain will halt)
