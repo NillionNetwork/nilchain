@@ -8,7 +8,7 @@ Meta is a module that holds metadata related to resources paid for in the PET ne
 
 ### Data
 
-MetaData is a map of information associated with resource consumption in the PET network. The data which is stored will not be verified. The module has no concept of what is valid or invalid with the assoctiated data.
+MetaData is a map of information associated with resource consumption in the PET network. The data which is stored will not be verified. The module has no concept of what is valid or invalid with the associated data.
 
 * Data: `0x01 | sha256(data) (32 byte) | bytes(data) |`
 
@@ -22,7 +22,7 @@ The amount is burned instead of sent to another address at this point in time. I
 
 message MsgPayFor {
   option (cosmos.msg.v1.signer) = "from_address";
-  btyes resource = 1;
+  bytes resource = 1;
   string   from_address                    = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   repeated cosmos.base.v1beta1.Coin amount = 3 [
     (gogoproto.nullable)     = false,
