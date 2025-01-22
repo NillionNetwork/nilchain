@@ -3,7 +3,7 @@
 nilchain is the Coordination Layer for the Nillion Network. It coordinates the payment of blind
 computations and storage operations performed on the network. It is built using the [Cosmos
 SDK](https://github.com/cosmos/cosmos-sdk), a framework for building PoS blockchain applications,
-which was chosen for the interconnectivity, speed and sovereignty its ecosystem provides.
+which was chosen for the interconnectivity, speed, and sovereignty its ecosystem provides.
 
 ## Building
 
@@ -28,10 +28,10 @@ cd scripts
 ```
 
 ```
-# setup and start single chain locally
+# Setup and start single chain locally
 sh init.sh
-# setup and start two chains locally and create an ibc client/connection/channel 
+# Setup and start two chains locally and create an ibc client/connection/channel 
 sh hermes.sh
-# naive setup and start single chain for deploying devnet
+# Naive setup and start single chain for deploying devnet
 sh testnet.sh
 ```
