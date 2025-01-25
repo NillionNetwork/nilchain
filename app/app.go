@@ -156,7 +156,7 @@ var (
 	_ servertypes.Application = (*NillionApp)(nil)
 )
 
-// Nillion extends an ABCI application, but with most of its parameters exported.
+// NillionApp extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
 type NillionApp struct {
