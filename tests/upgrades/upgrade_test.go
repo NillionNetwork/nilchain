@@ -24,7 +24,7 @@ type UpgradeTestSuite struct {
 	common.NetworkTestSuite
 }
 
-// TestUpgrade0_2_1 tests the upgrade from 0.2.1 to 0.2.4
+// TestUpgrade0_2_4 tests the upgrade from 0.2.1 to 0.2.4
 func (s *UpgradeTestSuite) TestUpgrade0_2_4() {
 	oldVersion := "v0.2.1-test-only"
 	newVersion := upgrades.Upgrade_0_2_4.UpgradeName
