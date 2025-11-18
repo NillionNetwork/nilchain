@@ -14,7 +14,7 @@ option go_package = "github.com/NillionNetwork/nilchain/x/meta/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // PayFor pays for a resource in the PET neteotk
+  // PayFor pays for a resource in the PET network
   rpc PayFor(MsgPayFor) returns (MsgPayForResponse);
 }
 
