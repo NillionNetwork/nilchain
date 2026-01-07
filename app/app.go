@@ -11,6 +11,10 @@ import (
 	"github.com/NillionNetwork/nilchain/x/meta/keeper"
 	metatypes "github.com/NillionNetwork/nilchain/x/meta/types"
 
+    migrationmngr "github.com/evstack/ev-abci/modules/migrationmngr"
+    migrationmngr_keeper "github.com/evstack/ev-abci/modules/migrationmngr/keeper"
+    migrationmngrtypes "github.com/evstack/ev-abci/modules/migrationmngr/types"
+
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/spf13/cast"
@@ -98,9 +102,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+    stakingwrapper "github.com/evstack/ev-abci/modules/staking"
+    stakingkeeper "github.com/evstack/ev-abci/modules/staking/keeper"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
@@ -175,7 +179,7 @@ type NillionApp struct {
 	AccountKeeper         authkeeper.AccountKeeper
 	BankKeeper            bankkeeper.Keeper
 	CapabilityKeeper      *capabilitykeeper.Keeper
-	StakingKeeper         *stakingkeeper.Keeper
+	StakingKeeper         stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
@@ -192,6 +196,7 @@ type NillionApp struct {
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
 	MetaKeeper            keeper.Keeper
+	MigrationMngrKeeper   migrationmngr_keeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -278,6 +283,7 @@ func NewNillionApp(
 		govtypes.StoreKey, group.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, icacontrollertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey,
 		authzkeeper.StoreKey, ibcfeetypes.StoreKey, consensusparamtypes.StoreKey, circuittypes.StoreKey, metatypes.StoreKey,
+		migrationmngrtypes.ModuleName,
 	)
 
 	// register streaming services
@@ -520,6 +526,14 @@ func NewNillionApp(
 		appCodec, runtime.NewKVStoreService(keys[metatypes.StoreKey]), app.BankKeeper,
 	)
 
+	app.MigrationMngrKeeper = migrationmngr_keeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[migrationmngrtypes.ModuleName]),
+		app.AccountKeeper.AddressCodec(),
+		app.StakingKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	// ****  Module Options ****
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -538,7 +552,7 @@ func NewNillionApp(
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		stakingwrapper.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
@@ -546,6 +560,10 @@ func NewNillionApp(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		circuit.NewAppModule(appCodec, app.CircuitKeeper),
 		meta.NewAppModule(app.MetaKeeper, app.AccountKeeper),
+		migrationmngr.NewAppModule(
+			appCodec,
+			app.MigrationMngrKeeper,
+		),
 
 		// IBC modules
 		ibc.NewAppModule(app.IBCKeeper),
@@ -577,6 +595,7 @@ func NewNillionApp(
 	// NOTE: upgrade module is required to be prioritized
 	app.ModuleManager.SetOrderPreBlockers(
 		upgradetypes.ModuleName,
+		migrationmngrtypes.ModuleName,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -600,6 +619,7 @@ func NewNillionApp(
 	)
 	app.ModuleManager.SetOrderEndBlockers(
 		govtypes.ModuleName,
+		migrationmngrtypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -626,6 +646,7 @@ func NewNillionApp(
 		icatypes.ModuleName, ibcfeetypes.ModuleName, feegrant.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName,
 		vestingtypes.ModuleName, group.ModuleName, consensusparamtypes.ModuleName, circuittypes.ModuleName,
 		metatypes.ModuleName,
+		migrationmngrtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)

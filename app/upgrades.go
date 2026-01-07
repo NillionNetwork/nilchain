@@ -9,6 +9,7 @@ import (
 var Upgrades = []upgrades.Upgrade{
 	upgrades.Upgrade_0_2_1,
 	upgrades.Upgrade_0_2_4,
+	upgrades.Upgrade_0_3_0,
 }
 
 func (app NillionApp) setupUpgradeHandlers() {
