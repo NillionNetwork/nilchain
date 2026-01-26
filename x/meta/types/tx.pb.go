@@ -182,7 +182,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// PayFor pays for a resource in the PET neteotk
+	// PayFor pays for a resource in the PET network
 	PayFor(ctx context.Context, in *MsgPayFor, opts ...grpc.CallOption) (*MsgPayForResponse, error)
 }
 
@@ -205,7 +205,7 @@ func (c *msgClient) PayFor(ctx context.Context, in *MsgPayFor, opts ...grpc.Call
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// PayFor pays for a resource in the PET neteotk
+	// PayFor pays for a resource in the PET network
 	PayFor(context.Context, *MsgPayFor) (*MsgPayForResponse, error)
 }
 
