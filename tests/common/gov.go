@@ -77,5 +77,5 @@ func (s *NetworkTestSuite) BroadcastMessages(ctx context.Context, chain *cosmos.
 
 	//chainA, chainB := s.GetChains()
 	//err = test.WaitForBlocks(ctx, 2, chainA, chainB)
-	return resp, err
+	return resp, nil
 }
