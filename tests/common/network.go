@@ -34,8 +34,9 @@ func (s *NetworkTestSuite) InitChain(version string, binary string) {
 
 	if version == "v0.1.1" {
 		binary = "nilliond"
+	} else {
+		binary = "nilchaind"
 	}
-	binary = "nilchaind"
 
 	client, network := interchaintest.DockerSetup(t)
 	s.DockerClient = client
